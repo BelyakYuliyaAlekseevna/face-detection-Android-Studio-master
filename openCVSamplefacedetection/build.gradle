@@ -1,0 +1,50 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion '27.0.3'
+
+    defaultConfig {
+        applicationId "org.opencv.samples.facedetect"
+        minSdkVersion 9
+        targetSdkVersion 24
+
+        // uncomment splits to decrease app size - google recommends to split only if the app is > 100mb
+//        splits {
+//            abi {
+//                enable true
+//                reset()
+//                include 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a','mips','mips64'
+//            }
+//        }
+        ndk {
+            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_PLATFORM=android-13', '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
+                cppFlags "-frtti", "-fexceptions"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/jni/CMakeLists.txt'
+        }
+    }
+}
+
+dependencies {
+    implementation project(':openCVLibrary310')
+    implementation 'com.android.support:appcompat-v7:24.2.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'me.dm7.barcodescanner:zxing:1.9'
+}
